@@ -168,7 +168,7 @@ void Perform_T1s(vector<cell>& sim_cells, vector<coordinate>& coords, double del
                     }
                 }
                 T1_Swap(sim_cells[id1], sim_cells[id2], sim_cells[id3], sim_cells[id4], coords[I], coords[Ip1] , delta); // This is upside down
-                cout << "T1 swap occurred!" << endl;
+                //cout << "T1 swap occurred!" << endl;
             }
         }
     }
@@ -201,9 +201,7 @@ void Random_T1s(vector<cell>& sim_cells, vector<coordinate>& coords, int max_swa
                 
                 if((curr.IsInner)&&(next.IsInner)&&(len(curr, next) < swap_len)&&(len(curr, next) > swap_low_bd*1.1)) // Then the edge is fully inside and it is critically small.
                 {
-                                                cout << "should swap!" << endl;
-
-                    /* Find which cells are affected by this edge. */
+                                                                   /* Find which cells are affected by this edge. */
                     /* The four involved cells will be:
                     * 1) The current cell with the small edge.
                     * 2) The other cell involving both of these two vertices.

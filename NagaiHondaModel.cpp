@@ -5,6 +5,7 @@
  * for naming functions. See:
  * http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml#Function_Names
  */
+#include <sys/time.h>
 #include <sstream> 
 #include <iostream>
 #include <iomanip>
@@ -24,8 +25,25 @@ int iter_notification = 100;
 
 using namespace std;
 
+// These are the configuration reading functions.
 void ReadConfig(int&, int&, int&, double&, int&, double&, int&, int&, double&, int&);
 void ReadMeshChanges(vector<cell>&);
+
+// These are our CUDA functions.
+void MoveVerts(vector<coordinate>&, vector<double>, vector<double>);
+
+// This is for timing the code.
+double clkbegin, clkend;
+double t;
+double rtclock()
+{
+  struct timezone Tzp;
+  struct timeval Tp;
+  int stat;
+  stat = gettimeofday (&Tp, &Tzp);
+  if (stat != 0) printf("Error return from gettimeofday: %d",stat);
+  return(Tp.tv_sec + Tp.tv_usec*1.0e-6);
+}
 
 int main()
 {	
@@ -55,6 +73,7 @@ int main()
 	
 	/************************** MAIN LOOP *****************************/
 	int proceed;
+    clkbegin = rtclock();
 	for(int iter = 0; iter < num_iters; iter++)
 	{
         if(iter % iter_notification == 0)
@@ -86,14 +105,18 @@ int main()
 			OffFile.close();	
 		}
 		
-		/******************* MOVE THE VERTICES ************************/
+		/**************** CALCULATE VERTEX MOVEMENT *******************/
+        vector<double> tx;
+        vector<double> ty;
 		dt = step;
 		proceed = 0;
 		while (proceed == 0)
 		{
-			proceed = NagaiHondaForce(coords, sim_cells, dt, delta);
+			proceed = NagaiHondaForce(coords, sim_cells, dt, delta, tx, ty);
 			dt = dt/2;
 		}
+        /************* MOVE THE VERTICES ON THE GPU *******************/
+        MoveVerts(coords, tx, ty);
         
 		/**************** PERFORM TOPOLOGICAL CHANGES *****************/
 		Perform_T1s(sim_cells, coords, delta);
@@ -103,7 +126,8 @@ int main()
 		PE << iter << " " << energy << endl;
 		
 	}
-	
+	clkend = rtclock();
+    t = clkend - clkbegin;
 	/******************* MAKE THE ENERGY PLOT *************************/
 	if(print_e == 1)
 	{
@@ -117,6 +141,7 @@ int main()
 		cout << "Making animation..." << endl;
 		system("bash Images/make_movie.sh");
 	}
+    cout << "The code ran in : " << t << " seconds!" << endl;
 	cout << "\n*************Simulation Complete********************\n\n";
 
 }

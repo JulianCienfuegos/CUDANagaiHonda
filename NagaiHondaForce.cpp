@@ -24,8 +24,11 @@ using std::abs;
 using std::sqrt;
 
 int NagaiHondaForce(std::vector<coordinate>& coordinate_list,
-	 std::vector<cell>& simulation_cells, double step, double delta)
+	 std::vector<cell>& simulation_cells, double step, double delta,
+     std::vector<double>& tx, std::vector<double>& ty)
 {	
+    tx.clear();
+    ty.clear();
 	/* Calculate the new vertex positions*/
 	double dist = 0;
 	for(std::vector<coordinate>::iterator it = coordinate_list.begin();
@@ -39,27 +42,20 @@ int NagaiHondaForce(std::vector<coordinate>& coordinate_list,
 
 			std::vector<double> area_force = AreaForce(it->index, simulation_cells, assoc_cells, coordinate_list);
 			std::vector<double> per_adh_force = PerAdhForce(it->index, simulation_cells, assoc_cells, coordinate_list);
-			it->t_x = step * (area_force.at(0) + per_adh_force.at(0));
-			it->t_y = step * (area_force.at(1) + per_adh_force.at(1));
+			tx.push_back(step * (area_force.at(0) + per_adh_force.at(0)));
+			ty.push_back(step * (area_force.at(1) + per_adh_force.at(1)));
 
 			/* Verify that no vertex has moved too much */
 			dist = sqrt(pow(it->t_x, 2) + pow(it->t_y, 2));
 			if(dist >  0.5*delta)
 				return 0;
 		}
-    //cout << "end" << endl;
+        else // the vertex is not an inner vertex. We will set its displacement to 0.
+        {
+            tx.push_back(0);
+            ty.push_back(0);
+        }
 	}
-
-	/* Update the vertex positions*/
-	for(std::vector<coordinate>::iterator it = coordinate_list.begin();
-		it != coordinate_list.end(); ++it)
-	{
-		it->x += it->t_x; 
-		it->y += it->t_y;
-            //cout << it->index << endl;
-
-	}	
-
-	return 1;
+    return 1;
 }
 
