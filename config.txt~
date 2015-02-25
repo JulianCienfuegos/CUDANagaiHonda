@@ -1,0 +1,11 @@
+9 # Dimension of mesh MUST BE ODD!!!!!
+1 # Plot the energy in the system? [1/0]
+1 # Make a movie in the end? [1/0]
+0.0001 # Maximum step size
+1500 # Number of iterations
+10 # frequency of OFF file output
+.4 # delta minimum vertex separation.
+
+
+	
+

@@ -1,0 +1,11 @@
+TODO:
+
+-> Explain how the gradient is calculated
+-> Usa CUDA to copy updated locations.
+-> Charts of speedup based on cuda. Try for different mesh sizes.
+-> Data Structure and Algorithm Section of Thesis section of thesis
+-> Purpose section of thesis.
+-> Implement something in LISP
+-> Periodic Boundary Conditions
+-> Topology Section of Thesis
+

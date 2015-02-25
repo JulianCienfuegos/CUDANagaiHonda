@@ -1,0 +1,21 @@
+# This file contains number of gamma changes, followed by the number of area changes, followed by the indices and new values
+10 8
+22 0.5
+30 10
+31 10
+32 10
+13 0.1 
+14 0.1
+15 0.1
+6 0.5
+1 10
+2 1.2
+10 1.2
+12 10
+13 0.10 
+14 0.1
+25 0.6
+6 0.6
+30 0.5
+32 0.5
+33 0.5
